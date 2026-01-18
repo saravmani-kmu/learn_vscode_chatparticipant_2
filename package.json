@@ -22,6 +22,29 @@
                 "description": "A simple hello world chat participant",
                 "isSticky": true
             }
+        ],
+        "languageModelTools": [
+            {
+                "name": "hello-chat-participant_get_time",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Get Current Time",
+                "modelDescription": "Gets the current date and time. Use this tool when the user asks what time it is, what the current date is, or anything related to the current time.",
+                "userDescription": "Get the current date and time",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(clock)",
+                "toolReferenceName": "currentTime",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "timezone": {
+                            "type": "string",
+                            "description": "Optional timezone (not currently used)"
+                        }
+                    }
+                }
+            }
         ]
     },
     "scripts": {
