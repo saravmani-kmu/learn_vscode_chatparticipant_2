@@ -1,37 +1,40 @@
 {
-  "name": "hello-chat-participant",
-  "displayName": "Hello Chat Participant",
-  "description": "A simple hello world chat participant for GitHub Copilot",
-  "version": "0.0.1",
-  "publisher": "your-publisher-name",
-  "engines": {
-    "vscode": "^1.93.0"
-  },
-  "categories": [
-    "AI",
-    "Chat"
-  ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
-  "contributes": {
-    "chatParticipants": [
-      {
-        "id": "hello-chat-participant.hello",
-        "fullName": "Hello",
-        "name": "hello",
-        "description": "A simple hello world chat participant",
-        "isSticky": true
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/vscode": "^1.93.0",
-    "typescript": "^5.0.0"
-  }
+    "name": "hello-chat-participant",
+    "displayName": "Hello Chat Participant",
+    "description": "A simple hello world chat participant for GitHub Copilot",
+    "version": "0.0.1",
+    "publisher": "your-publisher-name",
+    "engines": {
+        "vscode": "^1.93.0"
+    },
+    "categories": [
+        "AI",
+        "Chat"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "chatParticipants": [
+            {
+                "id": "hello-chat-participant.hello",
+                "fullName": "Hello",
+                "name": "hello",
+                "description": "A simple hello world chat participant",
+                "isSticky": true
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/vscode": "^1.93.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@vscode/chat-extension-utils": "^0.0.0-alpha.5"
+    }
 }
