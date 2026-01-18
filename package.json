@@ -44,6 +44,38 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_github_clone",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Clone GitHub Repository",
+                "modelDescription": "Clones a GitHub repository to the local workspace. Use this tool when the user wants to download, clone, or get source code from a GitHub repository. The user should provide the repository in 'owner/repo' format (e.g., 'microsoft/vscode'). Optionally accepts a branch name.",
+                "userDescription": "Clone a GitHub repository to your workspace",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(github)",
+                "toolReferenceName": "githubClone",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "repoName": {
+                            "type": "string",
+                            "description": "The GitHub repository to clone in 'owner/repo' format (e.g., 'microsoft/vscode')"
+                        },
+                        "branch": {
+                            "type": "string",
+                            "description": "Optional branch name to clone. If not specified, the default branch will be used."
+                        },
+                        "targetFolder": {
+                            "type": "string",
+                            "description": "Optional folder name to clone into. If not specified, the repository name will be used."
+                        }
+                    },
+                    "required": [
+                        "repoName"
+                    ]
+                }
             }
         ]
     },
