@@ -29,14 +29,43 @@ async function handleChatRequest(
     // Get what the user typed
     const userMessage = request.prompt;
 
-    // Stream a response back to the user
-    stream.markdown(`## Hello! 👋\n\n`);
-    stream.markdown(`You said: **"${userMessage}"**\n\n`);
-    stream.markdown(`This is a simple chat participant demo. I just echo back what you type!\n\n`);
-    stream.markdown(`---\n`);
-    stream.markdown(`*Tip: Use \`@hello\` in GitHub Copilot Chat to talk to me.*`);
+    try {
+        // Step 1: Get available language models (uses Copilot's models)
+        const models = await vscode.lm.selectChatModels({
+            vendor: 'copilot',
+            family: 'gpt-4o'  // You can also use 'gpt-3.5-turbo' or other available models
+        });
 
-    // Return an empty result (no metadata needed for this simple example)
+        if (models.length === 0) {
+            stream.markdown('❌ No language model available. Make sure GitHub Copilot is installed and signed in.');
+            return {};
+        }
+
+        const model = models[0];
+        stream.progress('Thinking...');
+
+        // Step 2: Create messages array for the LLM
+        const messages = [
+            vscode.LanguageModelChatMessage.User(userMessage)
+        ];
+
+        // Step 3: Send to LLM and stream the response
+        const response = await model.sendRequest(messages, {}, token);
+
+        // Step 4: Stream each chunk of the response as it arrives
+        for await (const chunk of response.text) {
+            stream.markdown(chunk);
+        }
+
+    } catch (error) {
+        // Handle errors gracefully
+        if (error instanceof vscode.LanguageModelError) {
+            stream.markdown(`⚠️ Language Model Error: ${error.message}`);
+        } else {
+            stream.markdown(`❌ Error: ${error}`);
+        }
+    }
+
     return {};
 }
 
