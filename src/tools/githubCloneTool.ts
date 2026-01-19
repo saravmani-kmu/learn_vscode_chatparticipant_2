@@ -83,9 +83,9 @@ export class GitHubCloneTool implements vscode.LanguageModelTool<IGitHubClonePar
             const targetPath = path.join(baseDir, repoShortName);
 
             // Build git clone command arguments
-            const args = ['clone', cloneUrl];branch
+            const args = ['clone', cloneUrl];
             if (branch) {
-                args.push('--branch', );
+                args.push('--branch', branch);
             }
             args.push(targetPath);
 
