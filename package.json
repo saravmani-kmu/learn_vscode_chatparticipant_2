@@ -76,6 +76,30 @@
                         "repoName"
                     ]
                 }
+            },
+            {
+                "name": "hello-chat-participant_open_browser",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Open Browser",
+                "modelDescription": "Opens Chrome browser and navigates to the specified URL. Use this tool when the user wants to open a website or URL in a browser.",
+                "userDescription": "Open a URL in Chrome browser",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(globe)",
+                "toolReferenceName": "openBrowser",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "description": "The URL to open in the browser (e.g., 'https://google.com')"
+                        }
+                    },
+                    "required": [
+                        "url"
+                    ]
+                }
             }
         ]
     },
@@ -90,6 +114,7 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@vscode/chat-extension-utils": "^0.0.0-alpha.5"
+        "@vscode/chat-extension-utils": "^0.0.0-alpha.5",
+        "playwright": "^1.40.0"
     }
 }

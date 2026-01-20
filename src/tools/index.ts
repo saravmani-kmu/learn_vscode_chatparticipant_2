@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { GetTimeTool } from './getTimeTool';
 import { GitHubCloneTool } from './githubCloneTool';
+import { OpenBrowserTool } from './openBrowserTool';
 
 /**
  * Register all tools for this extension
@@ -17,5 +18,10 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_github_clone', new GitHubCloneTool())
     );
 
-    console.log('Tools registered: get_time, github_clone');
+    // Register the Open Browser tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_open_browser', new OpenBrowserTool())
+    );
+
+    console.log('Tools registered: get_time, github_clone, open_browser');
 }
