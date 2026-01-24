@@ -11,6 +11,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { GetTimeTool } from "./tools/getTimeTool";
 import { GitHubCloneTool } from "./tools/githubCloneTool";
+import { RunTerminalCommandTool } from "./tools/runTerminalCommandTool";
 import * as vscode from 'vscode';
 import { z } from "zod";
 
@@ -23,6 +24,7 @@ export class McpServerManager {
     // Tools
     private getTimeTool: GetTimeTool;
     private githubCloneTool: GitHubCloneTool;
+    private runTerminalCommandTool: RunTerminalCommandTool;
 
     constructor() {
         this.app = express();
@@ -30,6 +32,7 @@ export class McpServerManager {
 
         this.getTimeTool = new GetTimeTool();
         this.githubCloneTool = new GitHubCloneTool();
+        this.runTerminalCommandTool = new RunTerminalCommandTool();
 
         // Initialize MCP Server
         this.mcpServer = new Server(
@@ -74,6 +77,18 @@ export class McpServerManager {
                             },
                             required: ["repoName"]
                         }
+                    },
+                    {
+                        name: "run_terminal_command",
+                        description: "Executes a command in the VS Code terminal.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                command: { type: "string", description: "The command to execute" },
+                                name: { type: "string", description: "Optional terminal name" }
+                            },
+                            required: ["command"]
+                        }
                     }
                 ]
             };
@@ -105,6 +120,26 @@ export class McpServerManager {
                         repoName: args.repoName,
                         branch: args.branch,
                         targetFolder: args.targetFolder
+                    });
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "run_terminal_command") {
+                try {
+                    if (!args.command) {
+                        throw new McpError(ErrorCode.InvalidParams, "command is required");
+                    }
+                    const result = await this.runTerminalCommandTool.execute({
+                        command: args.command,
+                        name: args.name
                     });
                     return {
                         content: [{ type: "text", text: result }]

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { GetTimeTool } from './getTimeTool';
 import { GitHubCloneTool } from './githubCloneTool';
+import { RunTerminalCommandTool } from './runTerminalCommandTool';
 
 /**
  * Register all tools for this extension
@@ -17,5 +18,10 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_github_clone', new GitHubCloneTool())
     );
 
-    console.log('Tools registered: get_time, github_clone');
+    // Register the Run Terminal Command tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_run_terminal_command', new RunTerminalCommandTool())
+    );
+
+    console.log('Tools registered: get_time, github_clone, run_terminal_command');
 }

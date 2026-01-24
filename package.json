@@ -76,6 +76,34 @@
                         "repoName"
                     ]
                 }
+            },
+            {
+                "name": "hello-chat-participant_run_terminal_command",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Run Terminal Command",
+                "modelDescription": "Executes a command in the VS Code integrated terminal. Use this tool when the user asks to run a shell command, execute a script, or perform an action in the terminal.",
+                "userDescription": "Run a command in the terminal",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(terminal)",
+                "toolReferenceName": "runTerminalCommand",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "command": {
+                            "type": "string",
+                            "description": "The command line to execute"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Optional name for the terminal"
+                        }
+                    },
+                    "required": [
+                        "command"
+                    ]
+                }
             }
         ]
     },
