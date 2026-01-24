@@ -1,11 +1,22 @@
 import * as vscode from 'vscode';
 import * as chatUtils from '@vscode/chat-extension-utils';
 import { registerTools } from './tools';
+import { McpServerManager } from './mcpServer';
 
 // This is the main extension file that registers our chat participant
 
+let mcpServer: McpServerManager;
+
 export function activate(context: vscode.ExtensionContext) {
     console.log('Hello Chat Participant is now active!');
+
+    // Start MCP Server
+    try {
+        mcpServer = new McpServerManager();
+        mcpServer.start(3000); // Start on port 3000
+    } catch (err) {
+        console.error('Failed to start MCP Server:', err);
+    }
 
     // Register our custom tools
     registerTools(context);
@@ -74,4 +85,7 @@ Be concise and helpful in your responses.`,
 
 export function deactivate() {
     console.log('Hello Chat Participant is now deactivated.');
+    if (mcpServer) {
+        mcpServer.stop();
+    }
 }

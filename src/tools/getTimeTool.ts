@@ -39,6 +39,18 @@ export class GetTimeTool implements vscode.LanguageModelTool<IGetTimeParameters>
         options: vscode.LanguageModelToolInvocationOptions<IGetTimeParameters>,
         _token: vscode.CancellationToken
     ): Promise<vscode.LanguageModelToolResult> {
+        const result = await this.execute(options.input);
+
+        // Return the result as a LanguageModelToolResult
+        return new vscode.LanguageModelToolResult([
+            new vscode.LanguageModelTextPart(result)
+        ]);
+    }
+
+    /**
+     * Core logic for getting the time, decoupled from the LM tool API
+     */
+    async execute(input: IGetTimeParameters): Promise<string> {
         const now = new Date();
 
         // Format the date and time nicely
@@ -55,11 +67,6 @@ export class GetTimeTool implements vscode.LanguageModelTool<IGetTimeParameters>
             second: '2-digit'
         });
 
-        const result = `The current date is ${dateStr} and the time is ${timeStr}.`;
-
-        // Return the result as a LanguageModelToolResult
-        return new vscode.LanguageModelToolResult([
-            new vscode.LanguageModelTextPart(result)
-        ]);
+        return `The current date is ${dateStr} and the time is ${timeStr}.`;
     }
 }
