@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { GetTimeTool } from './getTimeTool';
 import { GitHubCloneTool } from './githubCloneTool';
 import { RunTerminalCommandTool } from './runTerminalCommandTool';
+import { GitHubVulnerabilitiesTool } from './githubVulnerabilitiesTool';
 
 /**
  * Register all tools for this extension
@@ -23,5 +24,10 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_run_terminal_command', new RunTerminalCommandTool())
     );
 
-    console.log('Tools registered: get_time, github_clone, run_terminal_command');
+    // Register the GitHub Vulnerabilities tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_github_vulnerabilities', new GitHubVulnerabilitiesTool())
+    );
+
+    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities');
 }

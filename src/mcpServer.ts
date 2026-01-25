@@ -12,6 +12,7 @@ import cors from "cors";
 import { GetTimeTool } from "./tools/getTimeTool";
 import { GitHubCloneTool } from "./tools/githubCloneTool";
 import { RunTerminalCommandTool } from "./tools/runTerminalCommandTool";
+import { GitHubVulnerabilitiesTool } from "./tools/githubVulnerabilitiesTool";
 import * as vscode from 'vscode';
 import { z } from "zod";
 
@@ -25,6 +26,7 @@ export class McpServerManager {
     private getTimeTool: GetTimeTool;
     private githubCloneTool: GitHubCloneTool;
     private runTerminalCommandTool: RunTerminalCommandTool;
+    private githubVulnerabilitiesTool: GitHubVulnerabilitiesTool;
 
     constructor() {
         this.app = express();
@@ -33,6 +35,7 @@ export class McpServerManager {
         this.getTimeTool = new GetTimeTool();
         this.githubCloneTool = new GitHubCloneTool();
         this.runTerminalCommandTool = new RunTerminalCommandTool();
+        this.githubVulnerabilitiesTool = new GitHubVulnerabilitiesTool();
 
         // Initialize MCP Server
         this.mcpServer = new Server(
@@ -89,6 +92,18 @@ export class McpServerManager {
                             },
                             required: ["command"]
                         }
+                    },
+                    {
+                        name: "github_vulnerabilities",
+                        description: "Checks for code scanning alerts on the current repository.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                owner: { type: "string", description: "Repository owner" },
+                                repo: { type: "string", description: "Repository name" },
+                                branch: { type: "string", description: "Branch name" }
+                            }
+                        }
                     }
                 ]
             };
@@ -140,6 +155,24 @@ export class McpServerManager {
                     const result = await this.runTerminalCommandTool.execute({
                         command: args.command,
                         name: args.name
+                    });
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "github_vulnerabilities") {
+                try {
+                    const result = await this.githubVulnerabilitiesTool.execute({
+                        owner: args.owner,
+                        repo: args.repo,
+                        branch: args.branch
                     });
                     return {
                         content: [{ type: "text", text: result }]

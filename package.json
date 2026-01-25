@@ -104,6 +104,35 @@
                         "command"
                     ]
                 }
+            },
+            {
+                "name": "hello-chat-participant_github_vulnerabilities",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Check GitHub Vulnerabilities",
+                "modelDescription": "Checks for code scanning alerts (vulnerabilities) on the current GitHub repository branch. Use this tool when the user asks about security issues, vulnerabilities, or code scanning alerts.",
+                "userDescription": "Check for security vulnerabilities",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(shield)",
+                "toolReferenceName": "githubVulnerabilities",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "owner": {
+                            "type": "string",
+                            "description": "The repository owner. Optional, inferred from current workspace."
+                        },
+                        "repo": {
+                            "type": "string",
+                            "description": "The repository name. Optional, inferred from current workspace."
+                        },
+                        "branch": {
+                            "type": "string",
+                            "description": "The branch name. Optional, inferred from current workspace."
+                        }
+                    }
+                }
             }
         ]
     },
