@@ -13,6 +13,7 @@ import { GetTimeTool } from "./tools/getTimeTool";
 import { GitHubCloneTool } from "./tools/githubCloneTool";
 import { RunTerminalCommandTool } from "./tools/runTerminalCommandTool";
 import { GitHubVulnerabilitiesTool } from "./tools/githubVulnerabilitiesTool";
+import { JiraTool } from "./tools/jiraTools";
 import * as vscode from 'vscode';
 import { z } from "zod";
 
@@ -27,6 +28,7 @@ export class McpServerManager {
     private githubCloneTool: GitHubCloneTool;
     private runTerminalCommandTool: RunTerminalCommandTool;
     private githubVulnerabilitiesTool: GitHubVulnerabilitiesTool;
+    private jiraTool: JiraTool;
 
     constructor() {
         this.app = express();
@@ -36,6 +38,7 @@ export class McpServerManager {
         this.githubCloneTool = new GitHubCloneTool();
         this.runTerminalCommandTool = new RunTerminalCommandTool();
         this.githubVulnerabilitiesTool = new GitHubVulnerabilitiesTool();
+        this.jiraTool = new JiraTool();
 
         // Initialize MCP Server
         this.mcpServer = new Server(
@@ -103,6 +106,20 @@ export class McpServerManager {
                                 repo: { type: "string", description: "Repository name" },
                                 branch: { type: "string", description: "Branch name" }
                             }
+                        }
+                    },
+                    {
+                        name: "jira_get_issues",
+                        description: "Gets issues from a JIRA board.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                jiraUrl: { type: "string", description: "JIRA Base URL (e.g. https://your-domain.atlassian.net)" },
+                                email: { type: "string", description: "User email for authentication" },
+                                apiToken: { type: "string", description: "JIRA API Token" },
+                                projectKey: { type: "string", description: "Optional Project Key to filter issues" }
+                            },
+                            required: ["jiraUrl", "email", "apiToken"]
                         }
                     }
                 ]
@@ -173,6 +190,25 @@ export class McpServerManager {
                         owner: args.owner,
                         repo: args.repo,
                         branch: args.branch
+                    });
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "jira_get_issues") {
+                try {
+                    const result = await this.jiraTool.execute({
+                        jiraUrl: args.jiraUrl,
+                        email: args.email,
+                        apiToken: args.apiToken,
+                        projectKey: args.projectKey
                     });
                     return {
                         content: [{ type: "text", text: result }]
