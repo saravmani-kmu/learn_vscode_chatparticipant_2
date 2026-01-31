@@ -82,3 +82,12 @@ Try modifying `src/extension.ts` to:
 - Use context history with `context.history`
 - Make API calls and stream the results
 - Add multiple participants
+
+## Debugging MCP Server
+
+You can inspect the MCP server using the inspector tool:
+
+```bash
+npx @modelcontextprotocol/inspector http://localhost:3000/sse
+```
+
