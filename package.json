@@ -133,6 +133,35 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_playwright_input",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Playwright Browser Input",
+                "modelDescription": "Opens a browser using Playwright, navigates to a URL, and types text into the first input field. Use this when the user wants to automate typing into a web form or test a website input.",
+                "userDescription": "Open a browser and type text into an input field",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(browser)",
+                "toolReferenceName": "playwrightInput",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "description": "The URL to navigate to (e.g., 'https://practice.expandtesting.com/inputs')"
+                        },
+                        "textToType": {
+                            "type": "string",
+                            "description": "The text to type into the first input field"
+                        }
+                    },
+                    "required": [
+                        "url",
+                        "textToType"
+                    ]
+                }
             }
         ]
     },
@@ -154,6 +183,7 @@
         "@modelcontextprotocol/sdk": "^0.6.0",
         "@vscode/chat-extension-utils": "^0.0.0-alpha.5",
         "cors": "^2.8.5",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "playwright": "^1.58.1"
     }
 }

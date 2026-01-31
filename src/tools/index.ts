@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import { GetTimeTool } from './getTimeTool';
-import { GitHubCloneTool } from './githubCloneTool';
-import { RunTerminalCommandTool } from './runTerminalCommandTool';
-import { GitHubVulnerabilitiesTool } from './githubVulnerabilitiesTool';
+import { PlaywrightInputTool } from './playwrightInputTool';
 
 /**
  * Register all tools for this extension
@@ -14,20 +12,10 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_get_time', new GetTimeTool())
     );
 
-    // Register the GitHub Clone tool
+    // Register the Playwright Input tool
     context.subscriptions.push(
-        vscode.lm.registerTool('hello-chat-participant_github_clone', new GitHubCloneTool())
+        vscode.lm.registerTool('hello-chat-participant_playwright_input', new PlaywrightInputTool())
     );
 
-    // Register the Run Terminal Command tool
-    context.subscriptions.push(
-        vscode.lm.registerTool('hello-chat-participant_run_terminal_command', new RunTerminalCommandTool())
-    );
-
-    // Register the GitHub Vulnerabilities tool
-    context.subscriptions.push(
-        vscode.lm.registerTool('hello-chat-participant_github_vulnerabilities', new GitHubVulnerabilitiesTool())
-    );
-
-    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities');
+    console.log('Tools registered: get_time, playwright_input');
 }
