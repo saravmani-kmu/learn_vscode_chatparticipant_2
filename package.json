@@ -133,6 +133,39 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_write_to_file",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Write To File",
+                "modelDescription": "Writes text content to a file. Use this tool when the user wants to write, save, or create a file with specific content. Supports both creating new files and overwriting existing ones. Can also append to files if specified.",
+                "userDescription": "Write content to a file",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(file-add)",
+                "toolReferenceName": "writeToFile",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "filePath": {
+                            "type": "string",
+                            "description": "The file path to write to (absolute or relative to workspace)"
+                        },
+                        "content": {
+                            "type": "string",
+                            "description": "The text content to write to the file"
+                        },
+                        "append": {
+                            "type": "boolean",
+                            "description": "If true, append to the file instead of overwriting. Defaults to false."
+                        }
+                    },
+                    "required": [
+                        "filePath",
+                        "content"
+                    ]
+                }
             }
         ]
     },

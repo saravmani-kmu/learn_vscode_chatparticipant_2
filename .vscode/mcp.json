@@ -1,0 +1,12 @@
+{
+    "servers": {
+        "my-first-mcp": {
+            "type": "stdio",
+            "command": "node",
+            "args": [
+                "d:\\project_kyog\\git\\project_learn\\learn_vscode_mcp_sse\\dist\\index.js"
+            ]
+        },
+    },
+    "inputs": []
+}
