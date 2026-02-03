@@ -133,6 +133,62 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_run_vscode_command",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Run VS Code Command",
+                "modelDescription": "Executes a VS Code command from the command palette. Use this tool when the user wants to run a VS Code command like 'Checkmarx:: Scan Current File', workbench commands, or any other command available in the command palette. The user provides the command ID (e.g., 'checkmarx.scanCurrentFile' or 'workbench.action.files.save').",
+                "userDescription": "Run a VS Code command from the command palette",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(play)",
+                "toolReferenceName": "runVscodeCommand",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "commandId": {
+                            "type": "string",
+                            "description": "The VS Code command ID to execute (e.g., 'checkmarx.scanCurrentFile', 'workbench.action.files.save')"
+                        },
+                        "args": {
+                            "type": "array",
+                            "description": "Optional arguments to pass to the command",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "commandId"
+                    ]
+                }
+            },
+            {
+                "name": "hello-chat-participant_list_vscode_commands",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "List VS Code Commands",
+                "modelDescription": "Lists all available VS Code commands. Use this tool when the user wants to see what commands are available, search for a specific command, or find command IDs to use with the runVscodeCommand tool.",
+                "userDescription": "List available VS Code commands",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(list-unordered)",
+                "toolReferenceName": "listVscodeCommands",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "filter": {
+                            "type": "string",
+                            "description": "Optional filter to search for specific commands (e.g., 'checkmarx', 'git', 'file')"
+                        },
+                        "limit": {
+                            "type": "number",
+                            "description": "Optional limit on number of results (default: 50)"
+                        }
+                    }
+                }
             }
         ]
     },

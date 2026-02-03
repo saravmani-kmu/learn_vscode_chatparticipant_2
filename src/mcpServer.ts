@@ -14,6 +14,8 @@ import { GitHubCloneTool } from "./tools/githubCloneTool";
 import { RunTerminalCommandTool } from "./tools/runTerminalCommandTool";
 import { GitHubVulnerabilitiesTool } from "./tools/githubVulnerabilitiesTool";
 import { JiraTool } from "./tools/jiraTools";
+import { RunVscodeCommandTool } from "./tools/runVscodeCommandTool";
+import { ListVscodeCommandsTool } from "./tools/listVscodeCommandsTool";
 import * as vscode from 'vscode';
 import { z } from "zod";
 
@@ -29,6 +31,8 @@ export class McpServerManager {
     private runTerminalCommandTool: RunTerminalCommandTool;
     private githubVulnerabilitiesTool: GitHubVulnerabilitiesTool;
     private jiraTool: JiraTool;
+    private runVscodeCommandTool: RunVscodeCommandTool;
+    private listVscodeCommandsTool: ListVscodeCommandsTool;
 
     constructor() {
         this.app = express();
@@ -39,6 +43,8 @@ export class McpServerManager {
         this.runTerminalCommandTool = new RunTerminalCommandTool();
         this.githubVulnerabilitiesTool = new GitHubVulnerabilitiesTool();
         this.jiraTool = new JiraTool();
+        this.runVscodeCommandTool = new RunVscodeCommandTool();
+        this.listVscodeCommandsTool = new ListVscodeCommandsTool();
 
         // Initialize MCP Server
         this.mcpServer = new Server(
@@ -120,6 +126,29 @@ export class McpServerManager {
                                 projectKey: { type: "string", description: "Optional Project Key to filter issues" }
                             },
                             required: ["jiraUrl", "email", "apiToken"]
+                        }
+                    },
+                    {
+                        name: "run_vscode_command",
+                        description: "Executes a VS Code command from the command palette. Use this to run commands like 'Checkmarx:: Scan Current File' or other workbench commands.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                commandId: { type: "string", description: "The VS Code command ID to execute (e.g., 'checkmarx.scanCurrentFile', 'workbench.action.files.save')" },
+                                args: { type: "array", description: "Optional arguments to pass to the command", items: { type: "string" } }
+                            },
+                            required: ["commandId"]
+                        }
+                    },
+                    {
+                        name: "list_vscode_commands",
+                        description: "Lists all available VS Code commands with optional filtering. Use this to discover command IDs.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                filter: { type: "string", description: "Optional filter to search for specific commands (e.g., 'checkmarx', 'git', 'file')" },
+                                limit: { type: "number", description: "Optional limit on number of results (default: 50)" }
+                            }
                         }
                     }
                 ]
@@ -209,6 +238,43 @@ export class McpServerManager {
                         email: args.email,
                         apiToken: args.apiToken,
                         projectKey: args.projectKey
+                    });
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "run_vscode_command") {
+                try {
+                    if (!args.commandId) {
+                        throw new McpError(ErrorCode.InvalidParams, "commandId is required");
+                    }
+                    const result = await this.runVscodeCommandTool.execute({
+                        commandId: args.commandId,
+                        args: args.args
+                    });
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "list_vscode_commands") {
+                try {
+                    const result = await this.listVscodeCommandsTool.execute({
+                        filter: args.filter,
+                        limit: args.limit
                     });
                     return {
                         content: [{ type: "text", text: result }]
