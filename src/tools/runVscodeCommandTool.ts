@@ -49,6 +49,19 @@ export class RunVscodeCommandTool implements vscode.LanguageModelTool<IRunVscode
     async execute(input: IRunVscodeCommandParameters): Promise<string> {
         const { commandId, args } = input;
 
+
+
+        const cxExtension = vscode.extensions.getExtension('checkmarx.cxvscode');
+        if (cxExtension && !cxExtension.isActive) {
+            console.log("Activating Checkmarx extension...");
+            await cxExtension.activate();
+        }
+
+        const exports = cxExtension?.exports;
+
+
+
+
         try {
             // Get all available commands to validate
             const allCommands = await vscode.commands.getCommands(true);

@@ -16,6 +16,9 @@ import { GitHubVulnerabilitiesTool } from "./tools/githubVulnerabilitiesTool";
 import { JiraTool } from "./tools/jiraTools";
 import { RunVscodeCommandTool } from "./tools/runVscodeCommandTool";
 import { ListVscodeCommandsTool } from "./tools/listVscodeCommandsTool";
+import { ReminderTool } from "./tools/reminderTool";
+import { LogAnalysisTool } from "./tools/logAnalysisTool";
+import { CheckmarxScanTool } from "./tools/checkmarxScanTool";
 import * as vscode from 'vscode';
 import { z } from "zod";
 
@@ -33,8 +36,11 @@ export class McpServerManager {
     private jiraTool: JiraTool;
     private runVscodeCommandTool: RunVscodeCommandTool;
     private listVscodeCommandsTool: ListVscodeCommandsTool;
+    private reminderTool: ReminderTool;
+    private logAnalysisTool: LogAnalysisTool;
+    private checkmarxScanTool: CheckmarxScanTool;
 
-    constructor() {
+    constructor(context: vscode.ExtensionContext) {
         this.app = express();
         this.app.use(cors());
 
@@ -45,6 +51,9 @@ export class McpServerManager {
         this.jiraTool = new JiraTool();
         this.runVscodeCommandTool = new RunVscodeCommandTool();
         this.listVscodeCommandsTool = new ListVscodeCommandsTool();
+        this.reminderTool = new ReminderTool();
+        this.logAnalysisTool = new LogAnalysisTool();
+        this.checkmarxScanTool = new CheckmarxScanTool(context);
 
         // Initialize MCP Server
         this.mcpServer = new Server(
@@ -149,6 +158,44 @@ export class McpServerManager {
                                 filter: { type: "string", description: "Optional filter to search for specific commands (e.g., 'checkmarx', 'git', 'file')" },
                                 limit: { type: "number", description: "Optional limit on number of results (default: 50)" }
                             }
+                        }
+                    },
+                    {
+                        name: "reminderme_tool",
+                        description: "Sets a recurring reminder that uses an LLM to generate content.",
+                        inputSchema: {
+                            type: "object",
+                            properties: {
+                                interval: { type: "string", description: "Interval e.g. '1m', '30s'" },
+                                prompt: { type: "string", description: "The prompt to ask the LLM" }
+                            },
+                            required: ["interval", "prompt"]
+                        }
+                    },
+                    {
+                        "name": "log_analysis",
+                        "description": "Monitors output channels for new content and analyzes it.",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "channelName": { "type": "string", "description": "Channel name to monitor" },
+                                "prompt": { "type": "string", "description": "Analysis prompt" }
+                            },
+                            "required": ["channelName"]
+                        }
+                    },
+                    {
+                        "name": "checkmarx_scan",
+                        "description": "Triggers a Checkmarx scan for a specified folder.",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "folderPath": { "type": "string", "description": "Absolute path to the folder to scan" },
+                                "projectName": { "type": "string", "description": "Optional project name (defaults to folder name)" },
+                                "teamId": { "type": "string", "description": "Optional team ID (defaults to '1')" },
+                                "baseUrl": { "type": "string", "description": "Optional Checkmarx base URL for login" }
+                            },
+                            "required": ["folderPath"]
                         }
                     }
                 ]
@@ -287,38 +334,108 @@ export class McpServerManager {
                 }
             }
 
-            throw new McpError(ErrorCode.MethodNotFound, `Tool ${toolName} not found`);
+            if (toolName === "reminderme_tool") {
+                try {
+                    // Logic for reminder tool
+                    return {
+                        content: [{ type: "text", text: "Reminder started via MCP (Note: Notifications will appear in VS Code)" }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+            if (toolName === "log_analysis") {
+                try {
+                    const result = await this.logAnalysisTool.execute({
+                        channelName: args.channelName,
+                        prompt: args.prompt
+                    });
+
+                    return {
+                        content: [{ type: "text", text: result }]
+                    };
+                } catch (error: any) {
+                    return {
+                        content: [{ type: "text", text: `Error: ${error.message}` }],
+                        isError: true
+                    };
+                }
+            }
+
+        }
+            }
+
+    if(toolName === "checkmarx_scan") {
+    try {
+        const result = await this.checkmarxScanTool.execute({
+            folderPath: args.folderPath,
+            projectName: args.projectName,
+            teamId: args.teamId,
+            baseUrl: args.baseUrl
         });
+        return {
+            content: [{ type: "text", text: result }]
+        };
+    } catch (error: any) {
+        return {
+            content: [{ type: "text", text: `Error: ${error.message}` }],
+            isError: true
+        };
+    }
+    if (toolName === "checkmarx_scan") {
+        try {
+            const result = await this.checkmarxScanTool.execute({
+                folderPath: args.folderPath,
+                projectName: args.projectName,
+                teamId: args.teamId,
+                baseUrl: args.baseUrl
+            });
+            return {
+                content: [{ type: "text", text: result }]
+            };
+        } catch (error: any) {
+            return {
+                content: [{ type: "text", text: `Error: ${error.message}` }],
+                isError: true
+            };
+        }
+    }
+
+    throw new McpError(ErrorCode.MethodNotFound, `Tool ${toolName} not found`);
+});
     }
 
     public start(port: number = 3000) {
-        // SSE Endpoint
-        this.app.get("/sse", async (req: Request, res: Response) => {
-            console.log("New SSE connection");
-            this.transport = new SSEServerTransport("/message", res);
-            await this.mcpServer.connect(this.transport);
-        });
+    // SSE Endpoint
+    this.app.get("/sse", async (req: Request, res: Response) => {
+        console.log("New SSE connection");
+        this.transport = new SSEServerTransport("/message", res);
+        await this.mcpServer.connect(this.transport);
+    });
 
-        // Message Handling Endpoint
-        this.app.post("/message", async (req: Request, res: Response) => {
-            // console.log("Message received");
-            if (!this.transport) {
-                res.status(500).send("No active transport");
-                return;
-            }
-            await this.transport.handlePostMessage(req, res);
-        });
+    // Message Handling Endpoint
+    this.app.post("/message", async (req: Request, res: Response) => {
+        if (!this.transport) {
+            res.status(500).send("No active transport");
+            return;
+        }
+        await this.transport.handlePostMessage(req, res);
+    });
 
-        this.server = this.app.listen(port, () => {
-            console.log(`MCP Server running on port ${port}`);
-            vscode.window.showInformationMessage(`MCP Server started on port ${port}`);
-        });
-    }
+    this.server = this.app.listen(port, () => {
+        console.log(`MCP Server running on port ${port}`);
+        vscode.window.showInformationMessage(`MCP Server started on port ${port}`);
+    });
+}
 
     public stop() {
-        if (this.server) {
-            this.server.close();
-            console.log("MCP Server stopped");
-        }
+    if (this.server) {
+        this.server.close();
+        console.log("MCP Server stopped");
     }
+}
 }

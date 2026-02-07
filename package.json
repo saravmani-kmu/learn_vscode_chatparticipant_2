@@ -189,6 +189,107 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_reminderme",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Set Reminder",
+                "modelDescription": "Sets a recurring reminder. When the time elapses, it uses the LLM to generate content based on the prompt and displays it to the user. Use this when the user wants to be reminded of something repeatedly, or wants to practice something (like interview questions) at intervals.",
+                "userDescription": "Set a recurring reminder with LLM content",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(bell)",
+                "toolReferenceName": "reminderme",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "interval": {
+                            "type": "string",
+                            "description": "The interval for the reminder (e.g., '1m', '30s', '1h')"
+                        },
+                        "prompt": {
+                            "type": "string",
+                            "description": "The prompt to send to the LLM to generate the reminder content"
+                        }
+                    },
+                    "required": [
+                        "interval",
+                        "prompt"
+                    ]
+                }
+            },
+            {
+                "name": "hello-chat-participant_debug_docs",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Debug Docs",
+                "modelDescription": "Lists open text documents.",
+                "userDescription": "Debug open documents",
+                "canBeReferencedInPrompt": true
+            },
+            {
+                "name": "hello-chat-participant_log_analysis",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Analyze Logs",
+                "modelDescription": "Monitors a specified Output Channel for new messages and analyzes them with an LLM. Use this when the user asks to analyze logs, output, or error messages from another extension (e.g., 'Checkmarx', 'Git'). Notes: The Output Channel must be open and visible.",
+                "userDescription": "Monitor and analyze output logs",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "analyzeLogs",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "channelName": {
+                            "type": "string",
+                            "description": "Name of the Output Channel to monitor (e.g. 'Checkmarx')"
+                        },
+                        "prompt": {
+                            "type": "string",
+                            "description": "Optional prompt to guide the analysis (e.g. 'Summarize errors')"
+                        }
+                    },
+                    "required": [
+                        "channelName"
+                    ]
+                }
+            },
+            {
+                "name": "hello-chat-participant_checkmarx_scan",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Checkmarx Scan",
+                "modelDescription": "Triggers a Checkmarx code scan for a specific folder. Use this tool when the user asks to scan a folder, project, or workspace with Checkmarx.",
+                "userDescription": "Trigger a Checkmarx scan",
+                "canBeReferencedInPrompt": true,
+                "toolReferenceName": "checkmarxScan",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "folderPath": {
+                            "type": "string",
+                            "description": "Absolute path to the folder to scan"
+                        },
+                        "projectName": {
+                            "type": "string",
+                            "description": "Optional project name"
+                        },
+                        "teamId": {
+                            "type": "string",
+                            "description": "Optional team ID"
+                        },
+                        "baseUrl": {
+                            "type": "string",
+                            "description": "Optional Checkmarx base URL for login"
+                        }
+                    },
+                    "required": [
+                        "folderPath"
+                    ]
+                }
             }
         ]
     },
@@ -200,7 +301,10 @@
     "devDependencies": {
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
+        "@types/form-data": "^2.2.1",
+        "@types/jszip": "^3.4.0",
         "@types/node": "^20.0.0",
+        "@types/node-fetch": "^2.6.13",
         "@types/vscode": "^1.93.0",
         "eventsource": "^4.1.0",
         "tsx": "^4.21.0",
@@ -210,6 +314,9 @@
         "@modelcontextprotocol/sdk": "^0.6.0",
         "@vscode/chat-extension-utils": "^0.0.0-alpha.5",
         "cors": "^2.8.5",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "form-data": "^4.0.5",
+        "jszip": "^3.10.1",
+        "node-fetch": "^3.3.2"
     }
 }

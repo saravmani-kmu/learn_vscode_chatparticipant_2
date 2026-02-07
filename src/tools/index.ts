@@ -5,6 +5,10 @@ import { RunTerminalCommandTool } from './runTerminalCommandTool';
 import { GitHubVulnerabilitiesTool } from './githubVulnerabilitiesTool';
 import { RunVscodeCommandTool } from './runVscodeCommandTool';
 import { ListVscodeCommandsTool } from './listVscodeCommandsTool';
+import { ReminderTool } from './reminderTool';
+import { LogAnalysisTool } from './logAnalysisTool';
+import { CheckmarxScanTool } from './checkmarxScanTool';
+
 
 /**
  * Register all tools for this extension
@@ -41,6 +45,21 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_list_vscode_commands', new ListVscodeCommandsTool())
     );
 
-    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities, run_vscode_command, list_vscode_commands');
+    // Register the Reminderme tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_reminderme', new ReminderTool())
+    );
+
+    // Register Log Analysis tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_log_analysis', new LogAnalysisTool())
+    );
+
+    // Register Checkmarx Scan tool
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_checkmarx_scan', new CheckmarxScanTool(context))
+    );
+
+    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities, run_vscode_command, list_vscode_commands, reminderme, log_analysis');
 }
 
