@@ -1,0 +1,9 @@
+App_id,Task_Type,Task_SubType,Task,DueDate,Parent_JIRA,JIRA,Status,MoreDetails
+APP-003,Bug,Critical,Fix login timeout issue,2026-02-20,,BUG-2001,In Progress,Users experiencing 30s timeout on login
+APP-003,Feature,Enhancement,Add MFA support,2026-03-10,,FEAT-3002,Open,Multi-factor authentication requirement
+APP-003,Bug,Medium,Memory leak in report generation,2026-02-25,,BUG-2003,Open,Memory increases over time when generating reports
+APP-003,Task,Documentation,Update API documentation,2026-03-05,,DOC-4001,Done,Swagger docs need updating for v2 APIs
+APP-003,Security,Vulnerability,Update OpenSSL to v3.0,2026-03-15,SEC-1234,,,
+APP-003,Compliance,Audit,Complete SOX audit requirements,2026-02-28,AUDIT-567,,,
+APP-003,Security,Certificate,Renew SSL certificate,2026-04-01,CERT-890,,,
+APP-003,Performance,Optimization,Optimize database queries,2026-03-20,PERF-111,,,

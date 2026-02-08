@@ -3,6 +3,7 @@ import { GetTimeTool } from './getTimeTool';
 import { GitHubCloneTool } from './githubCloneTool';
 import { RunTerminalCommandTool } from './runTerminalCommandTool';
 import { GitHubVulnerabilitiesTool } from './githubVulnerabilitiesTool';
+import { TaskPlannerTool } from './taskPlannerTool';
 
 /**
  * Register all tools for this extension
@@ -29,5 +30,10 @@ export function registerTools(context: vscode.ExtensionContext) {
         vscode.lm.registerTool('hello-chat-participant_github_vulnerabilities', new GitHubVulnerabilitiesTool())
     );
 
-    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities');
+    // Register the Task Planner tool (LangGraph multi-agent workflow)
+    context.subscriptions.push(
+        vscode.lm.registerTool('hello-chat-participant_task_planner', new TaskPlannerTool())
+    );
+
+    console.log('Tools registered: get_time, github_clone, run_terminal_command, github_vulnerabilities, task_planner');
 }

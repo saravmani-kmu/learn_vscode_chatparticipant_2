@@ -133,6 +133,34 @@
                         }
                     }
                 }
+            },
+            {
+                "name": "hello-chat-participant_task_planner",
+                "tags": [
+                    "hello-tools"
+                ],
+                "displayName": "Task Planner",
+                "modelDescription": "Multi-agent task planner that fetches and organizes task items. Use this tool when the user asks about TCI (Technical Compliance Items), iTracker issues, tasks, compliance items, bugs, features, or wants to collect and organize tasks for an application. This tool will analyze the query and invoke the appropriate agents (TCI Agent, iTracker Agent, or both) to fetch, parse, and store task items.",
+                "userDescription": "Fetch and organize task items from TCI and iTracker",
+                "canBeReferencedInPrompt": true,
+                "icon": "$(tasklist)",
+                "toolReferenceName": "taskPlanner",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The user's query describing what tasks to fetch (e.g., 'fetch TCI items', 'get all issues', 'collect compliance and bug tasks')"
+                        },
+                        "appId": {
+                            "type": "string",
+                            "description": "The application ID to fetch tasks for. Defaults to APP-001 if not specified."
+                        }
+                    },
+                    "required": [
+                        "query"
+                    ]
+                }
             }
         ]
     },
@@ -151,6 +179,8 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
+        "@langchain/core": "^1.1.19",
+        "@langchain/langgraph": "^1.1.4",
         "@modelcontextprotocol/sdk": "^0.6.0",
         "@vscode/chat-extension-utils": "^0.0.0-alpha.5",
         "cors": "^2.8.5",

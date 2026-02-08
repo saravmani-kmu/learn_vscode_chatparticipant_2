@@ -49,6 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
                 prompt: `You are a friendly and helpful coding assistant. 
 You have access to tools that can help you answer questions.
 When the user asks about the time or date, use the get_time tool to get the current time.
+When the user asks about TCI items, iTracker issues, compliance tasks, bugs, or wants to collect tasks for an application, use the task_planner tool. This tool uses a multi-agent system to fetch and organize tasks from TCI and iTracker sources.
 Be concise and helpful in your responses.`,
 
                 // Automatically stream the response back to VS Code
